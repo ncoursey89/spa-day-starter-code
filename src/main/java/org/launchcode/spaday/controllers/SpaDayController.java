@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 @Controller
 public class SpaDayController {
-
+//need to pass this to the template
     public boolean checkSkinType(String skinType, String facialType) {
         if (skinType.equals("oily")) {
             return facialType.equals("Microdermabrasion") || facialType.equals("Rejuvenating");
@@ -27,7 +27,7 @@ public class SpaDayController {
     @GetMapping(value="")
     @ResponseBody
     public String customerForm () {
-        String html = "<form method = 'post'>" +
+        String html = "<form method = 'post' action='/menu'>" +
                 "Name: <br>" +
                 "<input type = 'text' name = 'name'>" +
                 "<br>Skin type: <br>" +
@@ -41,13 +41,14 @@ public class SpaDayController {
                 "<select name = 'manipedi'>" +
                 "<option value = 'manicure'>Manicure</option>" +
                 "<option value = 'pedicure'>Pedicure</option>" +
+                "<option value = 'both'>Mani/Pedi</option>" +
                 "</select><br>" +
                 "<input type = 'submit' value = 'Submit'>" +
                 "</form>";
         return html;
     }
 
-    @PostMapping(value="")
+    @PostMapping(value="/menu")
     public String spaMenu(@RequestParam String name, @RequestParam String skintype, @RequestParam String manipedi, Model model) {
 
         ArrayList<String> facials = new ArrayList<>();
@@ -63,6 +64,20 @@ public class SpaDayController {
             }
         }
 
+        ArrayList<String> polishChoices = new ArrayList<>();
+        polishChoices.add("#ed553e");
+        polishChoices.add("#ed3e4d");
+        polishChoices.add("#d12c71");
+        polishChoices.add("#a31787");
+        polishChoices.add("#34a39e");
+        polishChoices.add("#63c295");
+
+        model.addAttribute("polishChoices", polishChoices);
+
+        model.addAttribute("name", name);
+        model.addAttribute("skintype", skintype);
+        model.addAttribute("manipedi", manipedi);
+        model.addAttribute("appropriateFacials", appropriateFacials);
         return "menu";
     }
 }
